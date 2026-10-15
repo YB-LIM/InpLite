@@ -4,6 +4,8 @@ A lightweight editor for **Abaqus input files (`.inp`)** that stays fast on mult
 
 Version 1.0 · Windows (x64) · written in Rust with [egui](https://github.com/emilk/egui)
 
+Demo: https://youtu.be/LkoHPp08cP8?si=ZJ_RTcpk-DR9HUQs
+
 <img width="1682" height="1082" alt="For_GitHub" src="https://github.com/user-attachments/assets/a026e427-aa91-4d44-a076-abb67a24ec7d" />
 
 
