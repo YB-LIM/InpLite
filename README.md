@@ -9,7 +9,7 @@ Version 1.0 · Windows (x64) · written in Rust with [egui](https://github.com/e
 
 ## Why it is fast
 
-Most of an `.inp` file is node/element tables that nobody edits by hand. InpLite memory‑maps the
+Most of an `.inp` file is node/element tables that rarely edited by hand. InpLite memory‑maps the
 file and scans it once (≈0.5 s per GB). Every long run of data lines stays **on disk** and appears
 in the editor as a single blue placeholder line:
 
