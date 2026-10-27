@@ -234,18 +234,6 @@ cargo zigbuild --release --target x86_64-unknown-linux-gnu.2.17
 
 On Linux the file dialogs are built in (no GTK or zenity needed).
 
-### Keyword schema
-
-`assets/keywords.json` was generated from the Abaqus 2025 Keywords Guide PDF:
-
-```bash
-pip install pymupdf
-python tools/extract_schema.py Abaqus2025_KEYWORDS.pdf schema_full.json
-python tools/compact_schema.py schema_full.json assets/keywords.json
-```
-
-Re-run these for another Abaqus version. The schema contains keyword/parameter names and short
-excerpts of the guide for hover help; check with Dassault Systèmes before distributing it publicly.
 
 ### Source layout
 
