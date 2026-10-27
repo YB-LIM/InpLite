@@ -1,17 +1,13 @@
 # InpLite
 
-A lightweight editor for **Abaqus input files (`.inp`)** that stays fast on multi‑GB models.
+A lightweight editor for **Abaqus input files (`.inp`)** that stays fast on multi‑GB models,
+with a viewer for the output files `.dat`, `.msg`, `.sta` and `.log`.
 
-Version 1.0 · Windows (x64) · written in Rust with [egui](https://github.com/emilk/egui)
-
-Demo: https://youtu.be/LkoHPp08cP8?si=ZJ_RTcpk-DR9HUQs
-
-<img width="1682" height="1082" alt="For_GitHub" src="https://github.com/user-attachments/assets/a026e427-aa91-4d44-a076-abb67a24ec7d" />
-
+Version 1.2 · Windows (x64), Linux · written in Rust with [egui](https://github.com/emilk/egui)
 
 ## Why it is fast
 
-Most of an `.inp` file is node/element tables that rarely edited by hand. InpLite memory‑maps the
+Most of an `.inp` file is node/element tables that nobody edits by hand. InpLite memory‑maps the
 file and scans it once (≈0.5 s per GB). Every long run of data lines stays **on disk** and appears
 in the editor as a single blue placeholder line:
 
@@ -62,7 +58,30 @@ keystroke.
   node/element labels, elements referencing undefined nodes, wrong number of element nodes.
 * **Outline** of parts, assembly/instances, materials, interaction properties and steps, with filter.
   Long lists (flat input files) are grouped by keyword, e.g. one expandable *Nset entry for 40,000 sets.
-* **`*INCLUDE` split**: right-click a data block (the blue line in the editor, or the data
+* **New file** (File → New, Ctrl+N) and **dark mode** (View → Dark mode).
+* **Comment out / uncomment** (`**`): select lines → right-click, or Ctrl+K / Ctrl+Shift+K
+  (Ctrl+Q toggles); in the outline, right-click any entry (a part with its mesh, a step, several
+  selected entries) → *Comment out*. Data blocks kept on disk are commented too (rewritten in the
+  background), and a commented-out block shows up in the outline (grey, `#`) with *Uncomment*.
+  Comment + uncomment gives back the file byte for byte.
+* **Outline selection**: drag over outline entries (or click, Shift+click) to select several;
+  right-click → *Save selection as one \*Include file…*, *Comment out*. `*Part`, `*Assembly`,
+  `*Instance` and `*Step` stay paired with their `*End` line: an opening keyword brings its
+  `*End` line along, an `*End` line at the edge of the selection stays in the main file (the
+  same applies to *Save selection as \*Include file* in the editor).
+* **Column (rectangular) selection**: Alt+drag (or Alt+Shift+drag, Alt+Shift+arrows) like
+  Notepad++; typing, Backspace/Delete, copy, cut and paste work on every line of the column.
+* **Ctrl + mouse wheel** changes the font size (Ctrl+0: default).
+* **Abaqus output files** (`.dat`, `.msg`, `.sta`, `.log`): opened read-only in a viewer with
+  errors (red), warnings (orange), notes, step headers, increments and cutbacks coloured; a
+  summary (status, error/warning counts, last step/increment, total time, cutbacks, problem size,
+  wallclock time) and a tree of steps → increments and of errors/warnings (identical messages
+  grouped, e.g. "×1,240"); marks on the scroll bar; find (Ctrl+F) and go to line (Ctrl+G).
+* **Monitor** (eye button, like Notepad++'s *Monitoring (tail -f)*): the file is re-read every
+  0.5 s while Abaqus writes it and the view follows its end. A `.sta` file of a running job is
+  monitored right away. The file is never kept open, so Abaqus can append to it or replace it.
+* **`*INCLUDE` split**: select any lines (several blocks are fine) → right-click → *Save selection
+  as \*Include file…*; or right-click a data block (the blue line in the editor, or the data
   viewer), a keyword line, or an outline entry → *Save as \*Include file…*. The block (keyword
   line + data) is written to its own file in the background and replaced by an `*Include` line.
   The file goes to the default include folder (Settings: folder of the input file, a sub-folder
@@ -70,9 +89,11 @@ keystroke.
   folder or below are referenced with a relative path (`include/part.inp`, works on Windows and
   Linux), others with the full path.
   * *Tools → Save all part meshes* (Part/Assembly input; for a flat input: the whole mesh), or
-    right-click a part → *Save this part's mesh*: choose one file (`*Node` + `*Element` + the
-    sets right after them), two files (`*Node`, `*Element`) or four files (`*Node`, `*Element`,
-    `*Nset`, `*Elset`) per part.
+    right-click a part → *Save this part's mesh*: choose one file (everything from the first to
+    the last `*Node` / `*Element` block, so `*NGEN`, `*NFILL`, `*SYSTEM`, … keep their place),
+    two files (`*Node`, `*Element`) or four files (`*Node`, `*Element`, `*Nset`, `*Elset`) per
+    part. Parts where the order matters (`*SYSTEM`, node/element generation, `*Node` after
+    `*Element`) are always saved as one file, because separating them would change the model.
   * *Tools → Save data blocks* writes every keyword block with at least N data lines (N chosen
     in the dialog) into its own file.
   * Grouped outline entries (e.g. *Element, 2,245 blocks) can be saved into one file or one file each.
@@ -94,9 +115,15 @@ keystroke.
   for larger blocks a dialog explains why and offers *Save as \*Include file* or the data viewer).
 * **Export without mesh**: writes a small copy with node/element tables replaced by comments,
   handy for sending a model setup to someone.
-* **Compare** (File → Compare with file…): block-by-block diff that ignores blanks, letter case
-  and comments; parameter changes and data-line changes are listed; huge blocks are compared line
-  by line in the background.
+* **Compare** side by side, like vimdiff or the Notepad++ Compare plugin: right-click a tab →
+  *Compare with* → another open file or a file on disk (or File → Compare with file…). Changed
+  lines are yellow with the changed characters highlighted, lines only in A red, only in B green;
+  F7 / Shift+F7 (or Alt+Down / Alt+Up) jump between differences; *Only differences* folds the
+  identical lines; *Ignore blanks* / *Ignore case*; double-click opens the file at that line.
+  An open input file is compared with its current (unsaved) text, data blocks included. Output
+  files can be compared too.
+  *Tools → Compare keyword blocks with file…* is the keyword-aware compare (block by block,
+  ignoring blanks, letter case and comments).
 * **Completion** (automatic, or Ctrl+Space; accept with Enter, Tab or a double-click): keywords (adds the first required parameter),
   parameters of the current keyword, documented values, and names of sets/materials/etc. defined
   in the model.
@@ -115,7 +142,7 @@ bytes are written back unchanged on save.
 
 | | |
 |---|---|
-| Ctrl+O / Ctrl+S / Ctrl+Shift+S | open / save / save as |
+| Ctrl+N / Ctrl+O / Ctrl+S / Ctrl+Shift+S | new / open / save / save as |
 | Ctrl+F | find in the editor text |
 | Ctrl+G | go to line / node / element |
 | Ctrl+click, F12 | go to definition, open `*INCLUDE` file, open data block |
@@ -124,8 +151,11 @@ bytes are written back unchanged on save.
 | Ctrl+Z / Ctrl+Y (Ctrl+Shift+Z) | undo / redo |
 | Ctrl+A, Shift+arrows, Ctrl+arrows, double/triple click | select all / extend / word-wise / word / line |
 | middle mouse button | autoscroll: hold and move (or click, move, click again to stop); Esc stops |
+| Ctrl+K / Ctrl+Shift+K / Ctrl+Q | comment out / uncomment / toggle (`**`) the selected lines |
+| Alt+drag, Alt+Shift+arrows | rectangular (column) selection |
+| F7 / Shift+F7 | compare: next / previous difference |
 | F5 | re-run checks |
-| Ctrl + / Ctrl - | font size |
+| Ctrl+wheel, Ctrl + / Ctrl - / Ctrl+0 | font size / default size |
 
 ## Windows 11 right-click menu
 
@@ -139,9 +169,16 @@ Windows 11 menu would need a signed MSIX package, which this draft does not have
 ## Settings
 
 *Tools → Settings*: data-block threshold (default 2,000 lines; InpLite lowers it automatically
-so the editable text stays around 10,000 lines), `.bak` backups, font size, default folder for
-`*Include` files. Settings live in
-`%APPDATA%\InpLite\settings.json`.
+so the editable text stays around 10,000 lines), `.bak` backups, font size, dark mode, default
+folder for `*Include` files. Every change applies immediately; a new threshold re-reads the open
+files (unsaved changes are kept). Settings live in `%APPDATA%\InpLite\settings.json`
+(Linux: `~/.config/InpLite/settings.json`).
+
+## Installing
+
+Run `InpLite-<version>-setup.exe` (no administrator rights). An installed version is removed
+first (files, shortcuts, menu entries), so updating needs no separate uninstall; settings are kept.
+The portable zip needs no installation.
 
 ## Disclaimer
 
@@ -178,11 +215,24 @@ Installer (optional): install [NSIS](https://nsis.sourceforge.io), copy the exe 
 
 ```powershell
 makensis installer\inplite.nsi
-# -> dist\InpLite-1.0.0-setup.exe
+# -> dist\InpLite-1.2.0-setup.exe
 ```
 
 `build-windows-from-linux.sh` shows how the released binaries were cross-compiled on Linux
 (MinGW + `-Zbuild-std`).
+
+### Linux
+
+`InpLite-<version>-linux-x86_64.tar.gz` runs on glibc 2.17+ (RHEL/CentOS 7 and newer, i.e. most
+HPC clusters) and installs without root: `./install.sh` (see `linux/README-LINUX.txt`). It is built
+against glibc 2.17 with [cargo-zigbuild](https://github.com/rust-cross/cargo-zigbuild):
+
+```bash
+pip install ziglang && cargo install cargo-zigbuild
+cargo zigbuild --release --target x86_64-unknown-linux-gnu.2.17
+```
+
+On Linux the file dialogs are built in (no GTK or zenity needed).
 
 ### Keyword schema
 
@@ -208,6 +258,10 @@ excerpts of the guide for hover help; check with Dassault Systèmes before distr
 | `analysis.rs` | block structure, outline, definitions/references, model checks |
 | `mesh.rs` | node/element index and mesh checks |
 | `diff.rs`, `diffview.rs` | keyword-aware compare |
+| `textdiff.rs` | side-by-side text compare |
+| `logview.rs` | viewer for `.dat` / `.msg` / `.sta` / `.log`: classification, summary, monitoring |
+| `lineview.rs` | read-only virtual line view (output files, compare panes) |
+| `comment.rs` | comment out / uncomment, incl. data blocks on disk |
 | `codeview.rs` | virtualised editor widget: input, selection, undo, visible-line layout, gutter |
 | `editor.rs` | completion, hover, navigation, find, right-click menu |
 | `outline.rs`, `viewer.rs`, `panels.rs`, `app.rs` | UI |
