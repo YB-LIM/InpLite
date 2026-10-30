@@ -3,7 +3,7 @@
 A lightweight editor for **Abaqus input files (`.inp`)** that stays fast on multi‑GB models,
 with a viewer for the output files `.dat`, `.msg`, `.sta` and `.log`.
 
-Version 1.2 · Windows (x64), Linux · written in Rust with [egui](https://github.com/emilk/egui)
+Version 1.2 · Windows (x64)
 
 ## Why it is fast
 
