@@ -5,6 +5,8 @@ with a viewer for the output files `.dat`, `.msg`, `.sta` and `.log`.
 
 Version 1.2 · Windows (x64)
 
+Demo: https://youtu.be/LkoHPp08cP8?si=5fuDmXl4XcxFi0IL
+
 ## Why it is fast
 
 Most of an `.inp` file is node/element tables that nobody edits by hand. InpLite memory‑maps the
