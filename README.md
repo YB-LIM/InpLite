@@ -8,7 +8,7 @@ Version 1.2 · Windows (x64)
 Demo: https://youtu.be/LkoHPp08cP8?si=5fuDmXl4XcxFi0IL
 
 <img width="1364" height="882" alt="2026-11-01_16-47-48" src="https://github.com/user-attachments/assets/637cd529-a013-4223-a1c1-305e925a189e" />
-
+<img width="1362" height="892" alt="2026-11-01_16-48-49" src="https://github.com/user-attachments/assets/e0e5a5a6-1715-4a39-ba09-285780679e8d" />
 
 ## Why it is fast
 
