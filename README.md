@@ -3,7 +3,7 @@
 A lightweight editor for **Abaqus input files (`.inp`)** that stays fast on multi‑GB models,
 with a viewer for the output files `.dat`, `.msg`, `.sta` and `.log`.
 
-Version 1.2 · Windows (x64)
+Version 1.3 · Windows (x64)
 
 Demo: https://youtu.be/LkoHPp08cP8?si=5fuDmXl4XcxFi0IL
 
